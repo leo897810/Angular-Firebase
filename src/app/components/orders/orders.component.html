@@ -1,0 +1,232 @@
+<div *ngIf="orders?.length > 0; else noOrders" class="">
+  <ul *ngFor="let order of orders" class="collection">
+    <li class="collection-item">
+      <strong>{{order.client}}: </strong>{{order.time}}
+      <a class="secondary-content">
+        <i class="fa fa-file-text" (click)="changeState($event, order)"></i>
+        <i *ngIf=" showOrder && selectedOrder.id == order.id" class="fa fa-compress" (click)="clearState()"></i>
+      </a>
+      <div *ngIf=" showOrder && selectedOrder.id == order.id" class="flex-container">
+        <h2>Orders</h2>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let item of order.items">
+              <tr>
+                <td>{{item.item}}</td>
+                <td>
+                  <i class="fa fa-cny" aria-hidden="true"></i>{{item.price}}</td>
+                <td>{{item.quantity}}</td>
+                <td>
+                  <i class="fa fa-cny" aria-hidden="true"></i>
+                  <span class="price">{{item.price*item.quantity}}</span>
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td>Postage</td>
+                <td>
+                  <i class="fa fa-cny" aria-hidden="true"></i>35</td>
+                <td>{{order.postage}}</td>
+                <td>
+                  <i class="fa fa-cny" aria-hidden="true"></i> {{35*order.postage}}</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td>
+                  <strong>Amount</strong>
+                </td>
+                <td>
+                  <i class="fa fa-cny" aria-hidden="true">
+                    <span class="totalPrice">{{amount}}</span>
+                  </i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h5>Shipping information</h5>
+        <div class="row marketing">
+          <div class="col-lg-6">
+            <h6>Contract</h6>
+            <div class="list-group">
+              <label class="col-12">Recipient: </label>
+              <div class="col-12">
+                <span class="list-group-item list-group-item-action">{{order.recipient.name}}</span>
+              </div>
+              <label class="col-12">Phone: </label>
+              <div class="col-12">
+                <span class="list-group-item list-group-item-action">{{order.recipient.phone}}</span>
+              </div>
+              <label class="col-12">Address: </label>
+              <div class="col-12">
+                <span class="list-group-item list-group-item-action">{{order.recipient.address}}</span>
+              </div>
+              <label class="col-12">ID: </label>
+              <div class="col-12">
+                <span class="list-group-item list-group-item-action">{{order.recipient.id}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <h6>Shipping</h6>
+            <div class="list-group">
+              <label class="col-12">Company: </label>
+              <div class="col-12">
+                <span class="list-group-item list-group-item-action">{{order.shippingCompany}}</span>
+              </div>
+              <label class="col-12">URL: </label>
+              <div class="col-12">
+                <span class="list-group-item list-group-item-action">{{order.shippingCompanyUrl}}</span>
+              </div>
+              <label class="col-12">Tracking number: </label>
+              <div class="col-12">
+                <span class="list-group-item list-group-item-action">{{order.trackingNum}}</span>
+              </div>
+              <div class="col-2 offset-8" style="margin-top:  35px;">
+                <a href="#">
+                  <button type="button" class="btn btn-primary btn-lg" style="padding:0 22.5px;">Tracking</button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </li>
+  </ul>
+</div>
+<div *ngIf='newOrderFlag ; else newOrderForm'>
+  <input type="submit" value="New Order" class="btn" (click)=changeNewOrderFlag()>
+</div>
+
+<ng-template #noOrders>
+  <hr>
+  <h5>There are no Orders on the list</h5>
+</ng-template>
+
+<ng-template #newOrderForm>
+  <div class="card">
+    <div class="card-content">
+      <span class="card-title">Add New Order</span>
+      <form #orderForm="ngForm" (ngSubmit)="submitNewOrder()" class=" col s6">
+        <div class="row">
+          <div class="input-filed col s6">
+            <label>Select a client</label>
+            <select class="browser-default" [(ngModel)]="selectedClient" name="client" #selClient>
+              <option *ngFor="let client of clients" [ngValue]="client">
+                <!-- [attr.selected]="newOrder.client==client.name ? true : null" -->
+                {{client.name}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div *ngIf="selectedClient">
+          <div class="row">
+            <div class="input-filed col s6">
+              <label>Select a contact: {{selectedClient.id}}</label>
+              <select class="browser-default" [(ngModel)]="selectedContact" (ngModelChange)="loadItems($event)" name="contact">
+                <option *ngFor="let contract of selectedClient.contacts" [ngValue]="contract">
+                  <!-- [attr.selected]="newOrder.client==client.name ? true : null" -->
+                  {{contract.name}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="selectedContact">
+          <div class="row">
+            <div class="input-filed col s6">
+              <label style="font-size: 1.2rem;">Select an item:</label>
+              <select class="browser-default" [(ngModel)]="selectedItemTitle" name="title">
+                <option *ngFor="let item of items" [value]="item.title">
+                  {{item.title}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-filed col s6">
+              <input type="text" placeholder="Quantity" [(ngModel)]='selectedItemQuantity' name='Quantity'>
+              <label>Quantity</label>
+            </div>
+            <div class="input-filed col s6">
+              <input type="text" placeholder="Sell Price" [(ngModel)]='selectedItemPrice' name='price'>
+              <label><i class="fa fa-cny"></i>Price</label>
+            </div>
+          </div>
+          <div class="row">
+            <div style="position: relative; height: 70px; width: 100%">
+              <div class="fixed-action-btn horizontal" style="position: absolute; display: inline-block; right: 0px;">
+                <a class="waves-effect waves-light btn" (click)="addItem($event)">Add item</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row" *ngIf="selectedItems.length > 0">
+          <h4>Orders</h4>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Subtotal</th>
+                  <th>Delete</th>
+                  <th>Paid</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let item of selectedItems; let i = index;">
+                <tr>
+                  <td>{{item.title}}</td>
+                  <td>
+                    <i class="fa fa-cny" aria-hidden="true"></i>{{item.price}}</td>
+                  <td>{{item.quantity}}</td>
+                  <td>
+                    <i class="fa fa-cny" aria-hidden="true"></i>
+                    <span class="price">{{item.price*item.quantity}}</span>
+                  </td>
+                  <td>
+                    <a class="waves-effect waves-light btn red" (click)='deletSelectedItem($event,i)'>
+                      X
+                    </a>
+                  </td>
+                  <td>
+                    <input type="checkbox" id='item.title' />
+                    <label for='item.title'></label>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td>Total</td>
+                  <td><i class="fa fa-cny" aria-hidden="true"></i><span class="price">{{total}}</span></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row" *ngIf="selectedItems.length > 0">
+          <input type="submit" value="Submit" class="btn">
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>

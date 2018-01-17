@@ -1,0 +1,16 @@
+.flex-container{
+    margin-top: 10px;
+    display: flex;
+    flex-direction:column;
+    /* flex-wrap: nowrap; */
+}
+.flex-title{
+    display: flex;
+    flex-direction: row;
+    align-items:center;
+    justify-content:space-evenly;
+}
+.item-table{
+    text-align: center;
+    flex-grow: 1;
+}

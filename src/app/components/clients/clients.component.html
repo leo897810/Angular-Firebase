@@ -1,0 +1,81 @@
+
+<div class="card">
+  <div class="card-content">
+    <span class="card-title">Add Client</span>
+    <form (ngSubmit)="onSubmit()" class=" col s6">
+      <div class="row">
+        <div class="input-filed col s6">
+          <input type="text" placeholder="New Client Name" [(ngModel)]='newClient.name' name="name">
+          <label>Name</label>
+        </div>
+        <div class="input-filed col s6">
+          <input type="text" placeholder="Wechat ID" [(ngModel)]='newClient.wechat' name="wechat">
+          <label>Wechat ID</label>
+        </div>
+      </div>
+      <span class="card-title">Add Contact</span>
+
+      <div class="row">
+        <div class="input-filed col s4">
+          <input type="text" placeholder="Contact Name" [(ngModel)]='newClient.contacts[currentContact].name' name='contact'>
+          <label>Contact Name</label>
+        </div>
+        <div class="input-filed col s4">
+          <input type="text" placeholder="Contact Phone Number" [(ngModel)]='newClient.contacts[currentContact].phone' name='contactPhone'>
+          <label>Contact Phone Number</label>
+        </div>
+        <div class="input-filed col s4">
+          <input type="text" placeholder="Contact Id" [(ngModel)]='newClient.contacts[currentContact].id' name='contactId'>
+          <label>Contact Id</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-filed col s12">
+          <input type="text" placeholder="Contact Address" [(ngModel)]='newClient.contacts[currentContact].address' name='contactAddress'>
+          <label>Contact Address</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <input type="submit" value="Submit" class="btn">
+      </div>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="clients?.length > 0; else noClients">
+  <ul *ngFor="let client of clients" class="collection">
+    <li class="collection-item">
+      <strong>{{client.name}}: </strong>{{client.wechat}}
+      <a class="secondary-content">
+        <i class="fa fa-pencil" (click)="changeState($event, client)"></i>
+        <i *ngIf=" editState && editClient.id == client.id" class="fa fa-compress" (click)="clearState()"></i>
+      </a>
+      <div *ngIf=" editState && editClient.id == client.id">
+        <div class="card" *ngFor="let contact of client.contacts">
+          <h5>{{contact.name}}</h5>
+          <div class="card-content">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <div class="row" style="width: 100%">
+                  <div class="input-filed col s3">Phone Name: </div>
+                  <div class="input-filed col s3">{{contact.phone}}</div>
+                  <div class="input-filed col s3">Id: </div>
+                  <div class="input-filed col s3">{{contact.id}}</div>
+                </div>
+                <div class="row" style="width: 100%">
+                  <div class="input-filed col s3">Address: </div>
+                  <div class="input-filed col s9">{{contact.address}}</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+<ng-template #noClients>
+  <hr>
+  <h5>There is no Client</h5>
+</ng-template>

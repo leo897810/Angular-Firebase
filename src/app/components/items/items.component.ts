@@ -12,6 +12,7 @@ export class ItemsComponent implements OnInit {
   items : Item[];
   editState : boolean = false;
   editedItem : Item;
+  tempNewCategory : string = "";
   
   constructor(private itemService: ItemService) { }
 
@@ -43,4 +44,20 @@ export class ItemsComponent implements OnInit {
     this.editedItem = null;
   }
 
+  addCategories(){
+    this.editedItem.categories.push(this.tempNewCategory);
+    this.tempNewCategory = '';
+  }
+
+  deleteTempCategory(event, category) {
+    // this.item.categories = this.item.categories.filter(function (val){
+    //   return val !== category;
+    // });
+    for (var i = this.editedItem.categories.length - 1; i >= 0; i--) {
+      if (this.editedItem.categories[i] === category) {
+        this.editedItem.categories.splice(i, 1);
+      }
+    }
+    console.log(this.editedItem.categories.length);
+  }
 }

@@ -4,13 +4,29 @@
     <form (ngSubmit)="onSubmit()" class=" col s6">
       <div class="row">
         <div class="input-filed col s6">
-          <input type="text" placeholder="Add Title" [(ngModel)] = 'item.title' name = 'title'>
+          <input type="text" placeholder="Add Title" [(ngModel)]='item.title' name='title'>
           <label>Title</label>
         </div>
         <div class="input-filed col s6">
-          <input type="text" placeholder="Add Description" [(ngModel)] = 'item.description' name = 'description'>
+          <input type="text" placeholder="Add Description" [(ngModel)]='item.description' name='description'>
           <label>Description</label>
         </div>
+      </div>
+      <div class="row">
+        <div class="input-filed col s6">
+          <input type="text" placeholder="Add Url" [(ngModel)]='item.url' name='url'>
+          <label>Url</label>
+        </div>
+        <div class="input-filed col s6">
+          <input type="text" placeholder="Add Categories" [(ngModel)]='tempCategory' name='tempCategory'>
+          <label>Categories <button type="button" (click)='addCategories()'>Add</button>
+            <div *ngIf='item.categories.length>=1'>
+              <label *ngFor="let category of item.categories"><span>{{category}}<button (click)='deleteTempCategory($evetn,category)'><i class="fa fa-window-close"></i></button></span></label>
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="row">
         <input type="submit" value="Submit" class="btn">
       </div>
     </form>

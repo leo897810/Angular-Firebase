@@ -1,26 +1,57 @@
+<app-add-item></app-add-item>
 <div *ngIf="items?.length > 0; else noItems" class="">
   <ul *ngFor="let item of items" class="collection">
-    <li class="collection-item">{{item.id}}<strong>{{item.title}}: </strong>{{item.description}} 
+    <li class="collection-item">
+      <strong>{{item.title}}: </strong>{{item.description}}
       <!-- <button class="btn" onclick="deleteItem($event, item)">Delete This Item</button> -->
       <a class="secondary-content">
         <i class="fa fa-pencil" (click)="changeState($event, item)"></i>
         <i *ngIf=" editState && editedItem.id == item.id" class="fa fa-compress" (click)="clearState()"></i>
       </a>
       <div *ngIf=" editState && editedItem.id == item.id">
-          <form (ngSubmit)="updateItem()" class=" col s6">
+        <form (ngSubmit)="updateItem()" class=" col s6">
+          <div class="card">
+            <img class="card-img-top" src={{editedItem.url}} alt='editedItem.title'>
+            <div class="card-block">
               <div class="row">
                 <div class="input-filed col s6">
-                  <input type="text" placeholder="Change Title" [(ngModel)] = 'editedItem.title' name = 'title'>
-                  <!-- <label>Title</label> -->
+                  <input type="text" placeholder="Change Title" [(ngModel)]='editedItem.title' name='title'>
+                  <label>Title</label>
                 </div>
                 <div class="input-filed col s6">
-                  <input type="text" placeholder="Change Description" [(ngModel)] = 'editedItem.description' name = 'description'>
-                  <!-- <label>Description</label> -->
+                  <input type="text" placeholder="Change Description" [(ngModel)]='editedItem.description' name='description'>
+                  <label>Description</label>
                 </div>
-                <input type="submit" value="Submit" class="btn orange">
-                <button (click)="deleteItem($event, item)" class="btn red">Delete</button>
               </div>
-            </form>
+              <div class="row">
+                <div class="input-filed col s6">
+                  <input type="text" placeholder="Change Url" [(ngModel)]='editedItem.url' name='url'>
+                  <label>Title</label>
+                </div>
+                <div class="input-filed col s6">
+                  <input type="text" placeholder="Add new Category" [(ngModel)]='tempNewCategory' name='tempNewCategory'>
+                  <label>Categories 
+                    <button type="button" (click)='addCategories()'>Add</button>
+                  </label>
+                  <div *ngIf='editedItem.categories.length>=1'>
+                    <label style="color:black">Current Category: </label>
+                    <label *ngFor="let category of editedItem.categories">
+                      <span style="color:black">{{category}}
+                        <button (click)='deleteTempCategory($event,category)'>
+                          <i class="fa fa-window-close"></i>
+                        </button>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <input type="submit" value="Submit" class="btn orange disable" [disabled]='editedItem.categories.length < 1'>
+            <button (click)="deleteItem($event, item)" class="btn red">Delete</button>
+          </div>
+        </form>
       </div>
     </li>
   </ul>
